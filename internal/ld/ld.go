@@ -17,7 +17,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/antihax/optional"
 	h "github.com/hashicorp/go-retryablehttp"
 	"github.com/olekukonko/tablewriter"
 
@@ -83,7 +82,7 @@ func InitApiClient(options ApiOptions) ApiClient {
 	}
 	return ApiClient{
 		ldClient: ldapi.NewAPIClient(&ldapi.Configuration{
-			BasePath:  options.BaseUri + v2ApiPath,
+			Host:      options.BaseUri,
 			UserAgent: options.UserAgent,
 		}),
 		httpClient: client,
@@ -92,14 +91,14 @@ func InitApiClient(options ApiOptions) ApiClient {
 }
 
 func (c ApiClient) GetFlagKeyList() ([]string, error) {
-	ctx := context.WithValue(context.Background(), ldapi.ContextAPIKey, ldapi.APIKey{Key: c.Options.ApiKey})
+	ctx := context.WithValue(context.Background(), ldapi.ContextAPIKeys, ldapi.APIKey{Key: c.Options.ApiKey})
 
-	flags, _, err := c.ldClient.FeatureFlagsApi.GetFeatureFlags(ctx, c.Options.ProjKey, &ldapi.FeatureFlagsApiGetFeatureFlagsOpts{Summary: optional.NewBool(true)})
+	flags, _, err := c.ldClient.FeatureFlagsApi.GetFeatureFlags(ctx, c.Options.ProjKey).Summary(true).Execute()
 	if err != nil {
 		return nil, err
 	}
 
-	archivedFlags, _, err := c.ldClient.FeatureFlagsApi.GetFeatureFlags(ctx, c.Options.ProjKey, &ldapi.FeatureFlagsApiGetFeatureFlagsOpts{Archived: optional.NewBool(true), Summary: optional.NewBool(true)})
+	archivedFlags, _, err := c.ldClient.FeatureFlagsApi.GetFeatureFlags(ctx, c.Options.ProjKey).Archived(true).Summary(true).Execute()
 	if err != nil {
 		return nil, err
 	}
