@@ -81,7 +81,9 @@ func Test_hunkForLine(t *testing.T) {
 				CtxLines:   0,
 				Delimiters: defaultDelims,
 				Elements: []element.ElementMatcher{{
-					Aliases: aliases,
+					Elements: []string{testFlagKey},
+					Aliases:  aliases,
+					Built:    makeKeyMap(delimitedTestFlagKey),
 				}},
 			},
 			lineNum: 0,
@@ -212,7 +214,9 @@ func Test_aggregateHunksForFlag(t *testing.T) {
 			matcher: element.Matcher{
 				CtxLines:   0,
 				Delimiters: "",
-				Elements:   []element.ElementMatcher{},
+				Elements: []element.ElementMatcher{{
+					Elements: []string{delimitedTestFlagKey},
+				}},
 			}, lines: []string{delimitedTestFlagKey, delimitedTestFlagKey, delimitedTestFlagKey},
 			want: []ld.HunkRep{
 				makeHunk(1, delimitedTestFlagKey, delimitedTestFlagKey, delimitedTestFlagKey),
@@ -223,7 +227,9 @@ func Test_aggregateHunksForFlag(t *testing.T) {
 			matcher: element.Matcher{
 				CtxLines:   1,
 				Delimiters: "",
-				Elements:   []element.ElementMatcher{},
+				Elements: []element.ElementMatcher{{
+					Elements: []string{delimitedTestFlagKey},
+				}},
 			}, lines: []string{delimitedTestFlagKey, "", "", delimitedTestFlagKey, "", "", delimitedTestFlagKey},
 			want: []ld.HunkRep{
 				makeHunk(1, delimitedTestFlagKey, "", "", delimitedTestFlagKey, "", "", delimitedTestFlagKey),
@@ -234,7 +240,9 @@ func Test_aggregateHunksForFlag(t *testing.T) {
 			matcher: element.Matcher{
 				CtxLines:   1,
 				Delimiters: "",
-				Elements:   []element.ElementMatcher{},
+				Elements: []element.ElementMatcher{{
+					Elements: []string{delimitedTestFlagKey},
+				}},
 			},
 			lines: []string{delimitedTestFlagKey, "", "", "", delimitedTestFlagKey, "", "", "", delimitedTestFlagKey},
 			want: []ld.HunkRep{
@@ -248,7 +256,9 @@ func Test_aggregateHunksForFlag(t *testing.T) {
 			matcher: element.Matcher{
 				CtxLines:   1,
 				Delimiters: "",
-				Elements:   []element.ElementMatcher{},
+				Elements: []element.ElementMatcher{{
+					Elements: []string{delimitedTestFlagKey},
+				}},
 			},
 			lines: []string{delimitedTestFlagKey, "", delimitedTestFlagKey, "", delimitedTestFlagKey},
 			want: []ld.HunkRep{
@@ -260,7 +270,9 @@ func Test_aggregateHunksForFlag(t *testing.T) {
 			matcher: element.Matcher{
 				CtxLines:   1,
 				Delimiters: "",
-				Elements:   []element.ElementMatcher{},
+				Elements: []element.ElementMatcher{{
+					Elements: []string{delimitedTestFlagKey},
+				}},
 			},
 			lines: []string{delimitedTestFlagKey, "", delimitedTestFlagKey, "", delimitedTestFlagKey},
 			want: []ld.HunkRep{
@@ -449,4 +461,11 @@ func makeHunk(startingLineNumber int, lines ...string) ld.HunkRep {
 
 func delimit(s string, delim string) string {
 	return delim + s + delim
+}
+
+func makeKeyMap(flagKey string) map[string][]string {
+	keys := make(map[string][]string)
+	mapKey := strings.Trim(flagKey, `"`)
+	keys[mapKey] = []string{flagKey}
+	return keys
 }
