@@ -3,12 +3,12 @@ package element
 import "strings"
 
 type ElementMatcher struct {
-	Elements   []string
-	Aliases    map[string][]string
-	Delimiters []string
-	ProjKey    string
-	Directory  string
-	Built      map[string][]string
+	Elements       []string
+	Aliases        map[string][]string
+	Delimiters     []string
+	ProjKey        string
+	Directory      string
+	DelimitedFlags map[string][]string
 }
 
 type Matcher struct {
@@ -24,7 +24,7 @@ func (m Matcher) MatchElement(line, flagKey string) bool {
 	}
 
 	firstMatcher := m.Elements[0]
-	delimitedFlag := firstMatcher.Built[flagKey]
+	delimitedFlag := firstMatcher.DelimitedFlags[flagKey]
 
 	for _, flagKey := range delimitedFlag {
 		if strings.Contains(line, flagKey) {

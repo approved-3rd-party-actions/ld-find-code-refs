@@ -81,9 +81,9 @@ func Test_hunkForLine(t *testing.T) {
 				CtxLines:   0,
 				Delimiters: defaultDelims,
 				Elements: []element.ElementMatcher{{
-					Elements: []string{testFlagKey},
-					Aliases:  aliases,
-					Built:    makeKeyMap(delimitedTestFlagKey),
+					Elements:       []string{testFlagKey},
+					Aliases:        aliases,
+					DelimitedFlags: makeKeyMap(delimitedTestFlagKey),
 				}},
 			},
 			lineNum: 0,

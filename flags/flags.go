@@ -52,7 +52,7 @@ func GenerateSearchElements(opts options.Options, repoParams ld.RepoParams, deli
 	matcher.Elements = filteredFlags
 
 	matcher.Aliases, err = coderefs.GenerateAliases(filteredFlags, opts.Aliases, opts.Dir)
-	matcher.Built = buildDelimiterList(flags, delims)
+	matcher.DelimitedFlags = buildDelimiterList(flags, delims)
 	if err != nil {
 		log.Error.Fatalf("failed to create flag key aliases: %v", err)
 	}
