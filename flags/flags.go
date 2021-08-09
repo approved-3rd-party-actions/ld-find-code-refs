@@ -3,6 +3,7 @@ package flags
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/launchdarkly/ld-find-code-refs/coderefs"
 	"github.com/launchdarkly/ld-find-code-refs/element"
@@ -17,7 +18,7 @@ const (
 	minFlagKeyLen = 3 // Minimum flag key length helps reduce the number of false positives
 )
 
-func GenerateSearchElements(opts options.Options, repoParams ld.RepoParams) element.ElementMatcher {
+func GenerateSearchElements(opts options.Options, repoParams ld.RepoParams, delims string) element.ElementMatcher {
 	matcher := element.ElementMatcher{
 		Directory: opts.Dir,
 	}
@@ -51,11 +52,35 @@ func GenerateSearchElements(opts options.Options, repoParams ld.RepoParams) elem
 	matcher.Elements = filteredFlags
 
 	matcher.Aliases, err = coderefs.GenerateAliases(filteredFlags, opts.Aliases, opts.Dir)
+	matcher.Built = buildDelimiterList(flags, delims)
 	if err != nil {
 		log.Error.Fatalf("failed to create flag key aliases: %v", err)
 	}
 
 	return matcher
+}
+
+func buildDelimiterList(flags []string, delimiters string) map[string][]string {
+	delimiterMap := make(map[string][]string)
+	if delimiters == "" {
+		return delimiterMap
+	}
+	for _, flag := range flags {
+		//flagsDelimited := []string{}
+		tempFlags := []string{}
+		for _, left := range delimiters {
+			for _, right := range delimiters {
+				var sb strings.Builder
+				sb.Grow(len(flag) + 2)
+				sb.WriteRune(left)
+				sb.WriteString(flag)
+				sb.WriteRune(right)
+				tempFlags = append(tempFlags, sb.String())
+			}
+		}
+		delimiterMap[flag] = tempFlags
+	}
+	return delimiterMap
 }
 
 // Very short flag keys lead to many false positives when searching in code,

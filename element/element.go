@@ -8,6 +8,7 @@ type ElementMatcher struct {
 	Delimiters []string
 	ProjKey    string
 	Directory  string
+	Built      map[string][]string
 }
 
 type Matcher struct {
@@ -21,16 +22,13 @@ func (m Matcher) MatchElement(line, flagKey string) bool {
 	if m.Delimiters == "" && strings.Contains(line, flagKey) {
 		return true
 	}
-	for _, left := range m.Delimiters {
-		for _, right := range m.Delimiters {
-			var sb strings.Builder
-			sb.Grow(len(flagKey) + 2)
-			sb.WriteRune(left)
-			sb.WriteString(flagKey)
-			sb.WriteRune(right)
-			if strings.Contains(line, sb.String()) {
-				return true
-			}
+
+	firstMatcher := m.Elements[0]
+	delimitedFlag := firstMatcher.Built[flagKey]
+
+	for _, flagKey := range delimitedFlag {
+		if strings.Contains(line, flagKey) {
+			return true
 		}
 	}
 	return false

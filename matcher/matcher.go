@@ -68,22 +68,23 @@ func Run(opts options.Options) {
 	if gitClient != nil {
 		runExtinctions(opts, matcher, branch, repoParams, gitClient, ldApi)
 	}
-
 }
 
 // Scan checks the configured directory for flags base on the options configured for Code References.
 func Scan(opts options.Options, repoParams ld.RepoParams) (element.Matcher, []ld.ReferenceHunksRep) {
-	flagMatcher := flags.GenerateSearchElements(opts, repoParams)
+
+	// Configure delimiters
+	delims := getDelimiters(opts)
+	delimString := strings.Join(helpers.Dedupe(delims), "")
+
+	flagMatcher := flags.GenerateSearchElements(opts, repoParams, delimString)
 
 	matcher := element.Matcher{
 		Elements: []element.ElementMatcher{flagMatcher},
 		CtxLines: opts.ContextLines,
 	}
 
-	// Configure delimiters
-	delims := getDelimiters(opts)
-	matcher.Delimiters = strings.Join(helpers.Dedupe(delims), "")
-
+	matcher.Delimiters = delimString
 	// Begin search for elements.
 	refs, err := search.SearchForRefs(matcher)
 	if err != nil {
