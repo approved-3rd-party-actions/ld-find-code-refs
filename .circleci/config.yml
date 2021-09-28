@@ -75,6 +75,7 @@ jobs:
       - setup_remote_docker
       - run: sudo apt-get update
       - run: sudo apt-get install rpm
+      - run: echo $DOCKER_USERNAME
       - run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
       - run: curl -sL https://git.io/goreleaser | VERSION=v0.169.0 bash -s -- --rm-dist --skip-publish --skip-validate --release-notes <(make echo-release-notes)
 
