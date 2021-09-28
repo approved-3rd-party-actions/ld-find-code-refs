@@ -70,12 +70,13 @@ jobs:
   test-publish:
     docker:
       - image: cimg/go:1.17.1
+        environment:
+          <<: *environment
     steps:
       - checkout
       - setup_remote_docker
       - run: sudo apt-get update
       - run: sudo apt-get install rpm
-      - run: echo $DOCKER_USERNAMEZZ
       - run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
       - run: curl -sL https://git.io/goreleaser | VERSION=v0.169.0 bash -s -- --rm-dist --skip-publish --skip-validate --release-notes <(make echo-release-notes)
 
