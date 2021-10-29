@@ -19,6 +19,7 @@ const (
 	maxFileCount     = 10000 // Maximum number of files containing code references
 	maxHunkCount     = 25000 // Maximum number of total code references
 	maxLineCharCount = 500   // Maximum number of characters per line
+	testFlag         = "test-flag"
 )
 
 // Truncate lines to prevent sending over massive hunks, e.g. a minified file.
