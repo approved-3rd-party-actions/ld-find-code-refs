@@ -2,6 +2,7 @@ package search
 
 import (
 	"context"
+	"fmt"
 	"sort"
 	"strings"
 	"sync"
@@ -31,6 +32,8 @@ func truncateLine(line string) string {
 	if len(line) <= maxLineCharCount {
 		return line
 	}
+	anotherFlag := "flag-with-experiments"
+	fmt.Print(anotherFlag)
 	// convert to rune slice so that we don't truncate multibyte unicode characters
 	runes := []rune(line)
 	return string(runes[0:maxLineCharCount]) + "…"
