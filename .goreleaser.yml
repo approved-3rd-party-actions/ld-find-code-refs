@@ -43,49 +43,49 @@ archives:
     builds:
     - ld-find-code-refs
 
-nfpms:
-  -
-    id: ld-find-code-refs
-    file_name_template: "{{ .ProjectName }}_{{ .Version }}.{{ .Arch }}"
+#nfpms:
+#  -
+#    id: ld-find-code-refs
+#    file_name_template: "{{ .ProjectName }}_{{ .Version }}.{{ .Arch }}"
+#
+#    homepage: https://launchdarkly.com/
+#    maintainer: LaunchDarkly <team@launchdarkly.com>
+#    description: Job for finding and sending feature flag code references to LaunchDarkly
+#    license: Apache 2.0
+#    vendor: LaunchDarkly
+#
+#    formats:
+#    - deb
+#    - rpm
+#
+#    replacements:
+#      386: i386
 
-    homepage: https://launchdarkly.com/
-    maintainer: LaunchDarkly <team@launchdarkly.com>
-    description: Job for finding and sending feature flag code references to LaunchDarkly
-    license: Apache 2.0
-    vendor: LaunchDarkly
-
-    formats:
-    - deb
-    - rpm
-
-    replacements:
-      386: i386
-
-brews:
-  -
-    ids: 
-    - ld-find-code-refs
-    
-    name: ld-find-code-refs
-
-    description: Job for finding and sending feature flag code references to LaunchDarkly
-
-    homepage: "https://launchdarkly.com"
-
-    tap:
-      owner: launchdarkly
-      name: homebrew-tap
-
-    folder: Formula
-
-    url_template: "https://github.com/launchdarkly/ld-find-code-refs/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
-
-    install: |
-      bin.install "ld-find-code-refs"
-
-    commit_author:
-      name: LaunchDarklyCI
-      email: dev@launchdarkly.com
+#brews:
+#  -
+#    ids:
+#    - ld-find-code-refs
+#
+#    name: ld-find-code-refs
+#
+#    description: Job for finding and sending feature flag code references to LaunchDarkly
+#
+#    homepage: "https://launchdarkly.com"
+#
+#    tap:
+#      owner: launchdarkly
+#      name: homebrew-tap
+#
+#    folder: Formula
+#
+#    url_template: "https://github.com/launchdarkly/ld-find-code-refs/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+#
+#    install: |
+#      bin.install "ld-find-code-refs"
+#
+#    commit_author:
+#      name: LaunchDarklyCI
+#      email: dev@launchdarkly.com
 
 release:
   disable: true # this disables releasing *to GitHub*; it will still push to Docker
@@ -96,33 +96,21 @@ dockers:
     image_templates:
     - "launchdarkly/ld-find-code-refs:latest"
     - "launchdarkly/ld-find-code-refs:{{ .Tag }}"
-      
     dockerfile: build/package/cmd/Dockerfile
- 
+#    skip_push: true
   -
-    goos: linux
-
-    # GOARCH of the built binaries/packages that should be used.
-    goarch: amd64
-    ids: 
+    ids:
     - ld-find-code-refs-github-action
-
     image_templates:
     - "launchdarkly/ld-find-code-refs-github-action:latest"
     - "launchdarkly/ld-find-code-refs-github-action:{{ .Tag }}"
-      
     dockerfile: Dockerfile.github
+    skip_push: true
   -
-    goos: linux
-
-    # GOARCH of the built binaries/packages that should be used.
-    goarch: amd64
-
     image_templates:
     - "launchdarkly/ld-find-code-refs-bitbucket-pipeline:latest"
     - "launchdarkly/ld-find-code-refs-bitbucket-pipeline:{{ .Tag }}"
-     
-    ids: 
+    ids:
     - ld-find-code-refs-bitbucket-pipeline
-
     dockerfile: Dockerfile.bitbucket
+    skip_push: true
