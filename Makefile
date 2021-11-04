@@ -39,15 +39,6 @@ RELEASE_NOTES=<(GIT_EXTERNAL_DIFF='bash -c "diff --unchanged-line-format=\"\" $$
 echo-release-notes:
 	@cat $(RELEASE_NOTES)
 
-define publish_docker
-	test $(1) || (echo "Please provide tag"; exit 1)
-	docker build -t launchdarkly/$(3):$(1) build/package/$(4)
-	docker push launchdarkly/$(3):$(1)
-	# test $(2) && (echo "Not pushing latest tag for prerelease")
-	test $(2) || docker tag launchdarkly/$(3):$(1) launchdarkly/$(3):latest
-	test $(2) || docker push launchdarkly/$(3):latest
-endef
-
 validate-circle-orb:
 	test $(TAG) || (echo "Please provide tag"; exit 1)
 	circleci orb validate build/package/circleci/orb.yml || (echo "Unable to validate orb"; exit 1)
@@ -58,17 +49,19 @@ publish-dev-circle-orb: validate-circle-orb
 publish-release-circle-orb: validate-circle-orb
 	circleci orb publish build/package/circleci/orb.yml launchdarkly/ld-find-code-refs@$(TAG)
 
-publish-all: publish-release-circle-orb
-
 clean:
 	rm -rf out/
 	rm -f build/pacakge/cmd/ld-find-code-refs
 	rm -f build/package/github-actions/ld-find-code-refs-github-action
 	rm -f build/package/bitbucket-pipelines/ld-find-code-refs-bitbucket-pipeline
 
+# We use goreleaser to package and publish three docker images to dockerhub: the cli, github action and bitbucket pipelines.
+# Circleci orb is not published in goreleaser because goreleaser does not support publishing to circleci orbs.
 RELEASE_CMD=curl -sL https://git.io/goreleaser | GOPATH=$(mktemp -d) VERSION=$(GORELEASER_VERSION) bash -s -- --rm-dist --release-notes $(RELEASE_NOTES)
 
-publish:
+# publish comprises of two steps: publishing the circleci orb and then the three docker images (cli, github action and bb).
+# See comments above why circle orb is not included in goreleaser.
+publish: publish-release-circle-orb
 	$(RELEASE_CMD)
 
 products-for-release:

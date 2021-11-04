@@ -13,7 +13,16 @@ Once a release has been completed, update the [BitBucket pipelines](https://bitb
 
 ## Docker Hub
 
-To push a new image version to Docker hub, run `make publish-cli-docker TAG=$VERSION` or `make publish-github-actions-docker TAG=$VERSION`, where `$VERSION` is the version you want to release. This will compile the ld-find-code-refs binary for either the base command line code ref finder or the github actions specialized finder, build a new image with your version tagged, and also point latest at that tag and push both latest and $VERSION to docker hub.
+We use goreleaser to package and publish three images to dockerhub:
+
+* the cli
+
+* github action 
+
+* bitbucket pipelines
+ 
+# Circleci orb is not published in goreleaser because goreleaser does not support publishing to circleci orbs.
+
 
 ## CircleCI Orb Registry
 

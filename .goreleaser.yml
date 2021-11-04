@@ -63,9 +63,9 @@ nfpms:
 
 brews:
   -
-    ids: 
+    ids:
     - ld-find-code-refs
-    
+
     name: ld-find-code-refs
 
     description: Job for finding and sending feature flag code references to LaunchDarkly
@@ -93,36 +93,30 @@ release:
 
 dockers:
   -
+    dockerfile: build/package/cmd/Dockerfile
+    ids:
+      - ld-find-code-refs
     image_templates:
     - "launchdarkly/ld-find-code-refs:latest"
     - "launchdarkly/ld-find-code-refs:{{ .Tag }}"
-      
-    dockerfile: build/package/cmd/Dockerfile
- 
   -
-    goos: linux
-
-    # GOARCH of the built binaries/packages that should be used.
-    goarch: amd64
-    ids: 
-    - ld-find-code-refs-github-action
-
+    dockerfile: build/package/cmd/Dockerfile.github
+    ids:
+      - ld-find-code-refs-github-action
     image_templates:
     - "launchdarkly/ld-find-code-refs-github-action:latest"
     - "launchdarkly/ld-find-code-refs-github-action:{{ .Tag }}"
-      
-    dockerfile: Dockerfile.github
   -
-    goos: linux
-
-    # GOARCH of the built binaries/packages that should be used.
-    goarch: amd64
-
+    dockerfile: build/package/cmd/Dockerfile.bitbucket
+    ids:
+      - ld-find-code-refs-bitbucket-pipeline
     image_templates:
     - "launchdarkly/ld-find-code-refs-bitbucket-pipeline:latest"
     - "launchdarkly/ld-find-code-refs-bitbucket-pipeline:{{ .Tag }}"
-     
-    ids: 
-    - ld-find-code-refs-bitbucket-pipeline
 
-    dockerfile: Dockerfile.bitbucket
+#publishers:
+#  - name: Publish circleci orb
+#    cmd: |
+#      circleci orb validate build/package/circleci/orb.yml || (echo "Unable to validate orb"; exit 1)
+#      circleci orb publish build/package/circleci/orb.yml launchdarkly/ld-find-code-refs@$({{ .Tag }})
+#    dir: "{{ dir .ArtifactPath }}"
