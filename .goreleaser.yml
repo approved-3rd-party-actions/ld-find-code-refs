@@ -97,7 +97,7 @@ dockers:
     - "launchdarkly/ld-find-code-refs:latest"
     - "launchdarkly/ld-find-code-refs:{{ .Tag }}"
     dockerfile: build/package/cmd/Dockerfile
-#    skip_push: true
+    skip_push: true
   -
     ids:
     - ld-find-code-refs-github-action
