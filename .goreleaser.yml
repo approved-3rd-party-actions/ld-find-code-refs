@@ -114,9 +114,12 @@ dockers:
     - "launchdarkly/ld-find-code-refs-bitbucket-pipeline:latest"
     - "launchdarkly/ld-find-code-refs-bitbucket-pipeline:{{ .Tag }}"
 
-#publishers:
-#  - name: Publish circleci orb
-#    cmd: |
-#      circleci orb validate build/package/circleci/orb.yml || (echo "Unable to validate orb"; exit 1)
-#      circleci orb publish build/package/circleci/orb.yml launchdarkly/ld-find-code-refs@$({{ .Tag }})
-#    dir: "{{ dir .ArtifactPath }}"
+publishers:
+  - name: Publish circleci orb
+    cmd: |
+      # TODO: need the CircleCI CLI installed to run circleci setup and authenticate with a circle token
+      # that has github owner status
+      circleci setup
+      circleci orb validate build/package/circleci/orb.yml || (echo "Unable to validate orb"; exit 1)
+      circleci orb publish build/package/circleci/orb.yml launchdarkly/ld-find-code-refs@$({{ .Tag }})
+    dir: "{{ dir .ArtifactPath }}"

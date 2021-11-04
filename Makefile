@@ -55,16 +55,18 @@ clean:
 	rm -f build/package/github-actions/ld-find-code-refs-github-action
 	rm -f build/package/bitbucket-pipelines/ld-find-code-refs-bitbucket-pipeline
 
-# We use goreleaser to package and publish three docker images to dockerhub: the cli, github action and bitbucket pipelines.
-# Circleci orb is not published in goreleaser because goreleaser does not support publishing to circleci orbs.
-RELEASE_CMD=curl -sL https://git.io/goreleaser | GOPATH=$(mktemp -d) VERSION=$(GORELEASER_VERSION) bash -s -- --rm-dist --release-notes $(RELEASE_NOTES)
+# We use goreleaser to package and publish:
+# 1. docker image for the cli
+# 2. github action docker image
+# 3. bitbucket pipelines docker image
+# 4. circleci orb
+# The first three are published to dockerhub. The last one is published to circleci orb registry.
+PUBLISH_CMD=curl -sL https://git.io/goreleaser | GOPATH=$(mktemp -d) VERSION=$(GORELEASER_VERSION) bash -s -- --rm-dist --release-notes $(RELEASE_NOTES)
 
-# publish comprises of two steps: publishing the circleci orb and then the three docker images (cli, github action and bb).
-# See comments above why circle orb is not included in goreleaser.
-publish: publish-release-circle-orb
-	$(RELEASE_CMD)
+publish:
+	$(PUBLISH_CMD)
 
 products-for-release:
-	$(RELEASE_CMD) --skip-publish --skip-validate
+	$(PUBLISH_CMD) --skip-publish --skip-validate
 
 .PHONY: init test lint compile-github-actions-binary compile-macos-binary compile-linux-binary compile-windows-binary compile-bitbucket-pipelines-binary echo-release-notes publish-dev-circle-orb publish-release-circle-orb publish-all clean build

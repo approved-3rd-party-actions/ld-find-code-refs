@@ -13,22 +13,14 @@ Once a release has been completed, update the [BitBucket pipelines](https://bitb
 
 ## Docker Hub
 
-We use goreleaser to package and publish three images to dockerhub:
+We use goreleaser to package and publish four images:
 
-* the cli
+1. docker image for the cli
+2. github action docker image
+3. bitbucket pipelines docker image
+4. circleci orb
 
-* github action 
-
-* bitbucket pipelines
- 
-# Circleci orb is not published in goreleaser because goreleaser does not support publishing to circleci orbs.
-
-
-## CircleCI Orb Registry
-
-To publish the CircleCI Orb to the Orb registry, you'll need the [CircleCI CLI](https://circleci.com/docs/2.0/local-cli/) installed, and will need to run `circleci setup` and authenticate with a circle token that has github owner status.
-
-Run `make publish-dev-circle-orb TAG=$VERSION` or `make-publish-release-circle-orb TAG=$VERSION` to publish the orb to the orb registry, where `$VERSION` is the version you want to release. Running `publish-dev-circle-orb` will publish a development-tagged (e.g. `dev:0.0.1`) orb, which can be overwritten, and `publish-release-circle-orb` will publish a release version of the orb, which is immutable. Both dev and release orbs are open to the public, but development orbs are not visible in the list of registered orbs on Circle's [website](https://circleci.com/orbs/registry/?showAll=true).
+The first three are published to dockerhub. The last one is published to circleci orb registry.
 
 ## Beta builds
 
