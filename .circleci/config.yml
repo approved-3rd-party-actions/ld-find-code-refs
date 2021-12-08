@@ -6,6 +6,9 @@ experimental:
       only:
         - master
 
+orbs:
+  win: circleci/windows@2.2.0
+
 defaults:
   environment: &environment
     CIRCLE_TEST_REPORTS: /tmp/circle-reports
@@ -66,6 +69,20 @@ jobs:
           <<: *environment
 
     <<: *build_steps
+
+
+  test-windows: # name of your job
+    executor:
+      name: win/default
+    steps:
+      # default shell is Powershell
+      - run:
+          name: "Install dependencies"
+          command: |
+            choco install -y golang
+      - run:            
+         command: go test ./...
+         shell: powershell.exe
 
   test-publish:
     docker:
