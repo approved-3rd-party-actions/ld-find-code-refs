@@ -72,8 +72,7 @@ jobs:
 
 
   test-windows: # name of your job
-    executor:
-      name: win/default
+    executor: win/default
     steps:
       # default shell is Powershell
       - run:
